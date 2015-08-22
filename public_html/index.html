@@ -37,34 +37,19 @@
         <link rel="apple-touch-icon" sizes="120x120" href="icons/touch-icon-iphone-retina-120x120.png">
         <link rel="apple-touch-icon" sizes="152x152" href="icons/touch-icon-ipad-retina-152x152.png">
         <link rel="manifest" href="manifest.json">
-        <style>
-            .thumb {
-                height: 75px;
-                border: 1px solid #000;
-                margin: 10px 5px 0 0;
-            }
-            
-            .WelcomeScreen {
-                
-            }
-            
-            .coreGameCanvas {
-                /*display:none;*/
-            }
-        </style>
     </head>
     <body>
-        <div id="welcomeScreen">
+<!--        <div id="welcomeScreen">
             <h1>Welcome to Pixel Corruption... where you get to corrupt your own image.</h1>
 
             <p> May I suggest getting a famous piece of art... :D</p>
             <input type="file" accept="image/*"  onchange="processImage(this)" />
             <br/>
             <img id="thumbnail" style="width:20%; margin-top:10px;"  src="" alt="image"/>
-        </div>
-        <div id="coreGameCanvas"> 
-            
-        </div>
+        </div>-->
+        <div id="screen"></div>
+        
+        <div><br/></div>
         
         <!-- melonJS Library -->
         <!-- build:js js/app.min.js -->
@@ -77,7 +62,8 @@
         <script type="text/javascript" src="js/imageProcessing.js"> </script>
         
         <script type="text/javascript" src="js/game.js"></script>
-        <script type="text/javascript" src="build/js/resources.js"></script>
+        <script type="text/javascript" src="js/config.js"></script>
+        <script type="text/javascript" src="js/resources.js"></script>
 
         <script type="text/javascript" src="js/entities/entities.js"></script>
         <script type="text/javascript" src="js/entities/HUD.js"></script>

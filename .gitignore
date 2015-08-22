@@ -4,6 +4,10 @@ build
 node_modules/
 nbproject/private/
 
+# Raw Files #
+#############
+*.psd
+
 # Compiled source #
 ###################
 *.com

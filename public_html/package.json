@@ -1,6 +1,6 @@
 {
-  "name": "boilerplate",
-  "version": "2.1.1",
+  "name": "Pixel Corruption",
+  "version": "0.1",
   "main": "main.js",
   "devDependencies": {
     "connect": "^3.3.5",

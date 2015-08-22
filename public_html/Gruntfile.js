@@ -37,6 +37,10 @@ module.exports = function(grunt) {
           src: 'icons/*',
           dest: 'build/',
           expand: true
+        },{
+          src: 'css/**/*.css',
+          dest: 'build/',
+          expand: true
         }]
       }
     },

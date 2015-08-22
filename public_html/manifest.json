@@ -1,10 +1,10 @@
 {
-  "short_name": "melonJS Boilerplate",
-  "name": "My melonJS Boilerplate Game",
+  "short_name": "Pixel Corruption",
+  "name": "Pixel Corruption",
   "orientation": "landscape",
   "developer": {
-    "name": "melonjs",
-    "url": "http://www.melonjs.org"
+    "name": "TerinHD",
+    "url": "http://www.terinhd.com"
   },
   "start_url": "./index.html",
   "display": "fullscreen",

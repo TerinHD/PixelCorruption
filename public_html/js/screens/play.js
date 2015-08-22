@@ -38,9 +38,9 @@ game.PlayScreen = me.ScreenObject.extend({
         me.game.world.addChild(this.HUD);
 
         me.game.world.addChild(me.pool.pull("player", 20, me.game.viewport.height / 2 - 32 / 2, 0.15), 1);
-        me.game.world.addChild(me.pool.pull("baseEnemy", 100, 100, "Red"), 2);
-        me.game.world.addChild(me.pool.pull("baseEnemy", 200, 200, "Green"), 2);
-        me.game.world.addChild(me.pool.pull("baseEnemy", 300, 300, "Blue"), 2);
+//        me.game.world.addChild(me.pool.pull("baseEnemynemy"", me.game.viewport.right - 32, 100, "Red"), 2);
+//        me.game.world.addChild(me.pool.pull("baseEnemy", me.game.viewport.right - 32, 200, "Green"), 2);
+//        me.game.world.addChild(me.pool.pull("baseE, me.game.viewport.right - 32, 300, "Blue"), 2);
 
         me.input.bindKey(me.input.KEY.LEFT, "left");
         me.input.bindKey(me.input.KEY.RIGHT, "right");
@@ -50,6 +50,7 @@ game.PlayScreen = me.ScreenObject.extend({
         me.input.bindKey(me.input.KEY.D, "right");
         me.input.bindKey(me.input.KEY.W, "up");
         me.input.bindKey(me.input.KEY.S, "down");
+        me.input.bindKey(me.input.KEY.SPACE, "shoot", true);
     },
     /**
      *  action to perform when leaving this screen (state change)
@@ -66,5 +67,6 @@ game.PlayScreen = me.ScreenObject.extend({
         me.input.unbindKey(me.input.KEY.D);
         me.input.unbindKey(me.input.KEY.W);
         me.input.unbindKey(me.input.KEY.S);
+        me.input.unbindKey(me.input.KEY.SPACE);
     }
 });

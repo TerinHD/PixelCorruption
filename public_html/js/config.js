@@ -26,6 +26,12 @@
  * Config Namespace
  */
 var config = {
+    // Player Variables
     playerAccel: 0.5,
-    maxPlayerVel: 15
+    maxPlayerVel: 15,
+    
+    // Weapon Variables
+    baseLaserWidth: 28,
+    baseLaserHeight: 5,
+    baseLaserVel: 1
 };

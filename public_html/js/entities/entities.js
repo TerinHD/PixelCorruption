@@ -26,75 +26,90 @@
  * Player Entity
  */
 game.PlayerEntity = me.Entity.extend({
-    
     /**
      * constructor
      */
     init: function (x, y) {
-        
+
         // call the constructor
         this._super(me.Entity, 'init', [x, y, {
                 image: "player",
                 width: 32,
-                height: 32
+                height: 32,
+                laserCount: 1,
+                numLaser: 0
             }]);
+        
+        this.numLaserShots = 1;
+        this.usedLaserShots = 0;
 
-        this.body.addShape(new me.Rect(0, 0, this.width, this.height));
+        // Correct the Hitbox.
+        // @TODO - Fix hitbox to allow for concave nature of the polygon.
+        var poly = [new me.Vector2d(5, 5), new me.Vector2d(31, 17), new me.Vector2d(5, 28)];
+        this.body.removeShapeAt(0);
+        this.body.addShape(new me.Polygon(0, 0, poly));
         this.body.updateBounds();
-//        this.body.collisionType = "Player";
+        this.body.collisionType = me.collision.types.PLAYER_OBJECT;
     },
     /**
      * update the entity
      */
     update: function (dt) {
+
+        // @TODO - Update Velocity to never be negative.
         if (me.input.isKeyPressed('left')) {
             // update the entity velocity
             this.body.accel.x = -config.playerAccel;
             this.body.vel.x += this.body.accel.x * me.timer.tick;
-            if( this.body.vel.x < -config.maxPlayerVel ) {
+            if (this.body.vel.x < -config.maxPlayerVel) {
                 this.body.vel.x = -config.maxPlayerVel;
             }
         } else if (me.input.isKeyPressed('right')) {
             // update the entity velocitysdawasdaw
             this.body.accel.x = config.playerAccel;
             this.body.vel.x += this.body.accel.x * me.timer.tick;
-            if( this.body.vel.x > config.maxPlayerVel ) {
+            if (this.body.vel.x > config.maxPlayerVel) {
                 this.body.vel.x = config.maxPlayerVel;
             }
         } else {
-            if( this.body.vel.x !== 0 ) {
+            if (this.body.vel.x !== 0) {
                 this.body.vel.x += -this.body.accel.x * me.timer.tick;
-                if( (this.body.vel.x > 0 && this.body.accel.x < 0) ||
-                      this.body.vel.x < 0 && this.body.accel.x > 0  ) {
+                if ((this.body.vel.x > 0 && this.body.accel.x < 0) ||
+                        this.body.vel.x < 0 && this.body.accel.x > 0) {
                     this.body.accel.x = 0;
                     this.body.vel.x = 0;
                 }
             }
         }
-        
+
         if (me.input.isKeyPressed('up')) {
             // update the entity velocity
             this.body.accel.y = -config.playerAccel;
             this.body.vel.y += this.body.accel.y * me.timer.tick;
-            if( this.body.vel.y < -config.maxPlayerVel ) {
+            if (this.body.vel.y < -config.maxPlayerVel) {
                 this.body.vel.y = -config.maxPlayerVel;
             }
         } else if (me.input.isKeyPressed('down')) {
             // update the entity velocity
             this.body.accel.y = config.playerAccel;
             this.body.vel.y += this.body.accel.y * me.timer.tick;
-            if( this.body.vel.y > config.maxPlayerVel ) {
+            if (this.body.vel.y > config.maxPlayerVel) {
                 this.body.vel.y = config.maxPlayerVel;
             }
         } else {
-            if( this.body.vel.y !== 0 ) {
+            if (this.body.vel.y !== 0) {
                 this.body.vel.y += -this.body.accel.y * me.timer.tick;
-                if( (this.body.vel.y > 0 && this.body.accel.y < 0) ||
-                      this.body.vel.y < 0 && this.body.accel.y > 0  ) {
+                if ((this.body.vel.y > 0 && this.body.accel.y < 0) ||
+                        this.body.vel.y < 0 && this.body.accel.y > 0) {
                     this.body.accel.y = 0;
                     this.body.vel.y = 0;
                 }
             }
+        }
+
+        if (me.input.isKeyPressed("shoot") &&  this.numLaserShots > this.usedLaserShots) {
+            me.game.world.addChild(me.pool.pull("laser", this.pos.x + this.width + this.body.vel.x, this.pos.y + (this.height / 2) - (config.baseLaserHeight / 2), this));
+            this.usedLaserShots++;
         }
 
         // apply physics to the body (this moves the entity)
@@ -104,18 +119,18 @@ game.PlayerEntity = me.Entity.extend({
             this.pos.y = me.game.viewport.bottom - this.height;
             this.body.vel.y = 0;
         }
-        
+
         if (this.top < me.game.viewport.top) {
             this.pos.y = me.game.viewport.top;
             this.body.vel.y = 0;
         }
 //        
-        
+
         if (this.left < me.game.viewport.left) {
             this.pos.x = me.game.viewport.left;
             this.body.vel.x = 0;
         }
-        
+
         if (this.right > me.game.viewport.right) {
             this.pos.x = me.game.viewport.right - this.width;
             this.body.vel.x = 0;
@@ -132,10 +147,15 @@ game.PlayerEntity = me.Entity.extend({
      * (called when colliding with other objects)
      */
     onCollision: function (response, other) {
-        console.log( other.body.collisionType );
-        
+        var isCollision = true;
+        if (other.body.collisionType === me.collision.types.PROJECTILE_OBJECT) {
+            if (other instanceof game.BaseLaser) {
+                isCollision = false;
+            }
+        }
+
         // Make all other objects solid
-        return true;
+        return isCollision;
     }
 });
 
@@ -166,5 +186,76 @@ game.BaseEnemy = me.Entity.extend({
                 width: 32,
                 height: 32
             }]);
+
+        // Correct the Hitbox.
+        var poly = [new me.Vector2d(4, 5), new me.Vector2d(26, 5), new me.Vector2d(26, 27), new me.Vector2d(4, 27)];
+        this.body.removeShapeAt(0);
+        this.body.addShape(new me.Polygon(0, 0, poly));
+        this.body.updateBounds();
+        this.body.collisionType = me.collision.types.ENEMY_OBJECT;
+    },
+    update: function (time) {
+        this._super(me.Entity, "update", [time]);
+
+        this.body.update();
+
+        return true;
+    }
+
+});
+
+
+/** 
+ * Game Elements
+ */
+game.BaseLaser = me.Entity.extend({
+    init: function (x, y, player) {
+        this._super(me.Entity, "init", [x, y, {width: config.baseLaserWidth, height: config.baseLaserHeight}]);
+        this.z = 5;
+        this.player = player;
+        this.body.addShape(new me.Rect(0, 0, this.width, this.height));
+        this.body.updateBounds();
+//        this.body.setVelocity(1, 0);
+        this.body.collisionType = me.collision.types.PROJECTILE_OBJECT;
+        this.renderable = new (me.Renderable.extend({
+            init: function () {
+                this._super(me.Renderable, "init", [0, 0, config.baseLaserWidth, config.baseLaserHeight]);
+            },
+            destroy: function () {
+            },
+            draw: function (renderer) {
+                var color = renderer.globalColor.toHex();
+                renderer.setColor('#FFFFFF');
+                renderer.fillRect(0, 0, this.width, this.height);
+                renderer.setColor(color);
+            }
+        }));
+        this.alwaysUpdate = true;
+    },
+    update: function (time) {
+//        console.log( time );
+        this.body.vel.x = config.baseLaserVel * time;
+        if (this.pos.x > me.game.viewport.right) {
+            me.game.world.removeChild(this);
+            this.player.usedLaserShots--;
+        }
+
+        this.body.update();
+        me.collision.check(this);
+
+        return true;
+    },
+    onCollision: function (res, other) {
+        console.log( other.body.collisionType + " Enemy: " + me.collision.types.ENEMY_OBJECT + " Player: " + me.collision.types.PLAYER_OBJECT);
+        if (other.body.collisionType === me.collision.types.ENEMY_OBJECT) {
+            me.game.world.removeChild(this);
+            me.game.world.removeChild(other);
+            this.player.usedLaserShots--;
+//            game.PlayScreen.enemyManager.removeChild(other);
+            return false;
+        } else if( other.body.collisionType === me.collision.types.PLAYER_OBJECT || 
+                other.body.collisionType === me.collision.types.PROJECTILE_OBJECT) {
+            return false;
+        } 
     }
 });

@@ -44,6 +44,9 @@ var game = {
         if (me.game.HASH.debug === true) {
             window.onReady(function () {
                 me.plugin.register.defer(this, me.debug.Panel, "debug", me.input.KEY.V);
+                me.debug.renderHitBox = false; 
+                me.debug.displayFPS = true;
+                me.debug.renderVelocity = false;
             });
         }
 
@@ -66,8 +69,8 @@ var game = {
         me.state.set(me.state.PLAY, new game.PlayScreen());
 
         // add our player entity in the entity pool
-        me.pool.register("gameBounds", game.GameBounds);
         me.pool.register("player", game.PlayerEntity);
+        me.pool.register("laser", game.BaseLaser);
         me.pool.register("baseEnemy", game.BaseEnemy);
 
         // Start the game.

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<!--
+/* 
+ * The MIT License
+ *
+ * Copyright 2015 Nathan Gewecke.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+-->
+<html>
+    <head>
+        <title>Pixel Corruption</title>
+        <link rel="stylesheet" type="text/css" media="screen" href="css/index.css">
+        <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <link rel="apple-touch-icon" href="icons/touch-icon-iphone-60x60.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="icons/touch-icon-ipad-76x76.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="icons/touch-icon-iphone-retina-120x120.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="icons/touch-icon-ipad-retina-152x152.png">
+        <link rel="manifest" href="manifest.json">
+        <style>
+            .thumb {
+                height: 75px;
+                border: 1px solid #000;
+                margin: 10px 5px 0 0;
+            }
+            
+            .WelcomeScreen {
+                
+            }
+            
+            .coreGameCanvas {
+                /*display:none;*/
+            }
+        </style>
+    </head>
+    <body>
+        <div id="welcomeScreen">
+            <h1>Welcome to Pixel Corruption... where you get to corrupt your own image.</h1>
+
+            <p> May I suggest getting a famous piece of art... :D</p>
+            <input type="file" accept="image/*"  onchange="processImage(this)" />
+            <br/>
+            <img id="thumbnail" style="width:20%; margin-top:10px;"  src="" alt="image"/>
+        </div>
+        <div id="coreGameCanvas"> 
+            
+        </div>
+        
+        <!-- melonJS Library -->
+        <!-- build:js js/app.min.js -->
+        <script type="text/javascript" src="lib/melonJS-2.1.1.js"></script>
+
+        <!-- Plugin(s) -->
+        <script type="text/javascript" src="lib/plugins/debug/debugPanel.js"></script>
+
+        <!-- Game Scripts -->
+        <script type="text/javascript" src="js/imageProcessing.js"> </script>
+        
+        <script type="text/javascript" src="js/game.js"></script>
+        <script type="text/javascript" src="build/js/resources.js"></script>
+
+        <script type="text/javascript" src="js/entities/entities.js"></script>
+        <script type="text/javascript" src="js/entities/HUD.js"></script>
+
+        <script type="text/javascript" src="js/screens/title.js"></script>
+        <script type="text/javascript" src="js/screens/play.js"></script>
+        <!-- /build -->
+        <!-- Bootstrap & Mobile optimization tricks -->
+        <script type="text/javascript">
+            window.onReady(function onReady() {
+                game.onload();
+
+                // Mobile browser hacks
+                if (me.device.isMobile && !navigator.isCocoonJS) {
+                    // Prevent the webview from moving on a swipe
+                    window.document.addEventListener("touchmove", function (e) {
+                        e.preventDefault();
+                        window.scroll(0, 0);
+                        return false;
+                    }, false);
+
+                    // Scroll away mobile GUI
+                    (function () {
+                        window.scrollTo(0, 1);
+                        me.video.onresize(null);
+                    }).defer();
+
+                    me.event.subscribe(me.event.WINDOW_ONRESIZE, function (e) {
+                        window.scrollTo(0, 1);
+                    });
+                }
+            });
+        </script>
+        
+    </body>
+</html>

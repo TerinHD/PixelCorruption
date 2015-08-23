@@ -96,7 +96,6 @@ game.EnemyManager = {
         var color = game.EnemyManager.selectColor();
 
         if (color == "Out_of_Pixels") {
-            console.log("In Out of Pixels " + game.EnemyManager.currentPixelId);
             if (game.EnemyManager.currentEnemyCount === 0) {
                 me.state.change(me.state.GAME_END);
             }

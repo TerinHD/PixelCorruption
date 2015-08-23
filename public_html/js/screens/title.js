@@ -98,7 +98,7 @@ game.TitleScreen = me.ScreenObject.extend({
         this.handler = me.event.subscribe(me.event.KEYDOWN, function (action, keyCode, edge) {
             if (action === "enter") {
                 if( typeof game.UserImage === 'undefined' || !(game.UserImage instanceof Image)) {
-                    this.img = me.loader.getImage("sampleImage");
+                    this.img = me.loader.getImage("default");
                 } else {
                     this.img = game.UserImage;
                 }

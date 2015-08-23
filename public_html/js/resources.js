@@ -4,5 +4,5 @@ game.resources = [
     { name: "green_base_enemy", type: "image", src: "data/img/Green_Base_Enemy.png"},
     { name: "blue_base_enemy", type: "image", src: "data/img/Blue_Base_Enemy.png"},
     { name: "logo", type: "image", src: "data/img/PixelCorruptionLogo.png"},
-    { name: "sampleImage", type: "image", src: "data/img/Sample-Gameplay.png"}
+    { name: "default", type: "image", src: "data/img/DefaultGame.png"}
 ];

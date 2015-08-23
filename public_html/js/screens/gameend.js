@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-game.TextGameOver = me.Renderable.extend({
+game.TextGameEnd = me.Renderable.extend({
     // constructor
     init: function (w, h) {
         this._super(me.Renderable, "init", [0, 0, w, h]);
@@ -30,15 +30,15 @@ game.TextGameOver = me.Renderable.extend({
     },
     // Draw the Loading... text
     draw: function (renderer) {
-        var measurement = this.gameOverText.measureText(renderer, "GAME OVER!");
+        var measurement = this.gameOverText.measureText(renderer, "You win?");
         var xpos = (this.width - measurement.width) / 2;
         var ypos = (this.height - measurement.height) / 4; // Top 1/4th
-        this.gameOverText.draw(renderer, "GAME OVER!", xpos, ypos);
+        this.gameOverText.draw(renderer, "You win?", xpos, ypos);
     }
 
 });
 
-game.GameOverInstructions = me.Renderable.extend({
+game.GameEndInstructions = me.Renderable.extend({
     // constructor
     init: function (w, h) {
         this._super(me.Renderable, "init", [0, 0, w, h]);
@@ -61,7 +61,7 @@ game.GameOverInstructions = me.Renderable.extend({
 
 });
 
-game.GameOverScreen = me.ScreenObject.extend({
+game.GameEndScreen = me.ScreenObject.extend({
     /**
      *  action to perform on state change
      */

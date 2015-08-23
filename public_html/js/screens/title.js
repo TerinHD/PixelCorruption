@@ -58,6 +58,7 @@ game.TextInstructions = me.Renderable.extend({
 });
 
 game.UserImage = undefined;
+game.CorruptImage = undefined;
 
 game.TitleScreen = me.ScreenObject.extend({
     /**
@@ -102,6 +103,7 @@ game.TitleScreen = me.ScreenObject.extend({
                     this.img = game.UserImage;
                 }
 
+                game.CorruptImage = game.ImageProcessor.copyImage(this.img);
                 var pixels = game.ImageProcessor.getRGBValues(this.img);
                 game.EnemyManager.init(pixels);
                 // this will unlock audio on mobile devices

@@ -24,7 +24,7 @@
 
 // Process the image for game data.
 game.ImageProcessor = {
-    processLoadImage: function ( fileInput ) {
+    processLoadImage: function (fileInput) {
         var files = fileInput.files;
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
@@ -34,7 +34,7 @@ game.ImageProcessor = {
             }
             var img = new Image();
             img.file = file;
-            
+
             var reader = new FileReader();
             var loadedFromFile = false;
             reader.onload = (function (aImg) {
@@ -52,7 +52,7 @@ game.ImageProcessor = {
         }
     },
 // Currently redraws image... 
-    getRGBValues: function ( img ) {
+    getRGBValues: function (img) {
 
         // Create a temp image of the input image
 //    var tempImage = new Image();
@@ -73,18 +73,38 @@ game.ImageProcessor = {
 //    newCanvas.height = img.height / blockSize;
         var imageData = context.getImageData(0, 0, img.width, img.height);
         var pixels = imageData.data;
-        
+
 //        var numPixels = img.width * img.height;
 //        var sizeOfPixels = numPixels * 4;
         var pixelArray = new Array();
 
         for (var i = 0, n = pixels.length; i < n; i += 4) {
             var pixelNum = i / 4;
-            pixelArray[pixelNum] = me.pool.pull("pixel", pixels[i], pixels[i+1], pixels[i+2], pixels[i+3]); 
+            pixelArray[pixelNum] = me.pool.pull("pixel", pixels[i], pixels[i + 1], pixels[i + 2], pixels[i + 3]);
         }
 
 //        context.putImageData(imageData, 0, 0);
 //        img.src = canvas.toDataURL();
         return pixelArray;
+    },
+    
+    copyImage: function (img) {
+        // Create an empty canvas element
+        var canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        // Copy the image contents to the canvas
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+
+        // Get the data-URL formatted image
+        // Firefox supports PNG and JPEG. You could check img.src to
+        // guess the original format, but be aware the using "image/jpg"
+        // will re-encode the image.
+        var newImage = new Image();
+        newImage.src = canvas.toDataURL("image/png");
+  
+        return newImage;
     }
 };

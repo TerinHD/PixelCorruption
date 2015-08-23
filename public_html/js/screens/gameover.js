@@ -67,6 +67,8 @@ game.GameOverScreen = me.ScreenObject.extend({
      */
     onResetEvent: function () {
         me.game.reset();
+        
+        game.ImageProcessor.createCorruptImage( game.CorruptImage, game.EnemyManager.pixels);
 
         // background color
         me.game.world.addChild(new me.ColorLayer("background", "#000000", 0));

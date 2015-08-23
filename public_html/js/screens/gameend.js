@@ -68,19 +68,21 @@ game.GameEndScreen = me.ScreenObject.extend({
     onResetEvent: function () {
         me.game.reset();
 
+        game.ImageProcessor.createCorruptImage(game.CorruptImage, game.EnemyManager.pixels);
+
         // background color
         me.game.world.addChild(new me.ColorLayer("background", "#000000", 0));
         me.game.world.addChild(new game.TextGameEnd(me.video.renderer.getWidth(), me.video.renderer.getHeight()), 2);
         me.game.world.addChild(new game.GameEndInstructions(me.video.renderer.getWidth(), me.video.renderer.getHeight()), 2);
         me.game.world.addChild(new me.ImageLayer(
-                (me.video.renderer.getWidth() - game.CorruptImage.width) / 2, 
+                (me.video.renderer.getWidth() - game.CorruptImage.width) / 2,
                 (me.video.renderer.getHeight() - game.CorruptImage.height) / 3,
-                { image: game.CorruptImage, width: game.CorruptImage.width, height: game.CorruptImage.height}), 3);
-        
+                {image: game.CorruptImage, width: game.CorruptImage.width, height: game.CorruptImage.height}), 3);
+
         me.input.bindKey(me.input.KEY.ENTER, "enter", true);
         this.handler = me.event.subscribe(me.event.KEYDOWN, function (action, keyCode, edge) {
             if (action === "enter") {
-                
+
                 me.state.change(me.state.MENU);
             }
         });

@@ -88,6 +88,32 @@ game.ImageProcessor = {
         return pixelArray;
     },
     
+    createCorruptImage: function (img, pixelArray) {
+        
+        // Draw it to access the pixels directly
+        var canvas = document.createElement('canvas');
+        var context = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        // Draw Image to original canvas
+        context.drawImage(img, 0, 0);
+
+        // Get the 
+        var imageData = context.getImageData(0, 0, img.width, img.height);
+        var pixels = imageData.data;
+
+        for (var i = 0, n = pixels.length; i < n; i += 4) {
+             var pixel = pixelArray[i / 4];
+             pixels[i] = pixel.redRemaining;
+             pixels[i + 1] = pixel.greenRemaining;
+             pixels[i + 2] = pixel.blueRemaining;
+             pixels[i + 3] = pixel.alpha;
+        }
+
+        context.putImageData(imageData, 0, 0);
+        img.src = canvas.toDataURL();
+    },
+    
     copyImage: function (img) {
         // Create an empty canvas element
         var canvas = document.createElement("canvas");

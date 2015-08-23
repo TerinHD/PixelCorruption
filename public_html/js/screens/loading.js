@@ -34,7 +34,7 @@ game.TextLoading = me.Renderable.extend({
         draw: function (renderer) {
             var logo1_width = this.logo1.measureText(renderer, "Loading...").width;
             var xpos = (this.width - logo1_width) / 2;
-            var ypos = (this.height / 2) + 100;
+            var ypos = this.height / 2;
             this.logo1.draw(renderer, "Loading...", xpos, ypos);
         }
 
@@ -50,26 +50,6 @@ game.LoadingScreen = me.ScreenObject.extend({
 
         // background color
         me.game.world.addChild(new me.ColorLayer("background", "#000000", 0));
-
-        // Center the logo.
-        var x = (config.screenWidth / 2) - (config.logoWidth/2);
-        if (x < 0) {
-            x = 0;
-        }
-
-        // Use the first 1/3 for the Logo if you can.
-        var y = (config.screenHeight / 3) - (config.logoHeight/2);
-        if (y < 0) {
-            y = 0;
-        }
-
-        me.game.world.addChild(new me.ImageLayer(x, y, {
-            image: "logo",
-            width: config.logoWidth,
-            height: config.logoHeight,
-            name: "logo",
-            z: 1
-        }));
 
         me.game.world.addChild(new game.TextLoading(me.video.renderer.getWidth(), me.video.renderer.getHeight()), 2);
     },

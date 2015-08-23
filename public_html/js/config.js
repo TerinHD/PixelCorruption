@@ -34,6 +34,9 @@ var config = {
     screenWidth: 900,
     screenHeight: 500,
     
+    imageScaleWidth: 350,
+    imageScaleHeight: 150,
+    
     logoWidth: 800,
     logoHeight: 350,
     

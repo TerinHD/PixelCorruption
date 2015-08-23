@@ -74,6 +74,28 @@ game.GameOverScreen = me.ScreenObject.extend({
         me.game.world.addChild(new me.ColorLayer("background", "#000000", 0));
         me.game.world.addChild(new game.TextGameOver(me.video.renderer.getWidth(), me.video.renderer.getHeight()), 2);
         me.game.world.addChild(new game.GameOverInstructions(me.video.renderer.getWidth(), me.video.renderer.getHeight()), 2);
+        
+        // Create Sprite so we can scale it appropriately.
+//        var imageSprite = new me.Sprite(
+//                (me.video.renderer.getWidth() - config.imageScaleWidth) / 2,
+//                (me.video.renderer.getHeight() - config.imageScaleHeight) / 2,
+//                { image: game.CorruptImage, framewidth: game.CorruptImage.width, frameheight: game.CorruptImage.height});
+//                
+//        // Now we need to figure out how to scale it...
+//        var ratioWidth = game.CorruptImage.width / config.imageScaleWidth;
+//        var ratioHeight = game.CorruptImage.height / config.imageScaleHeight;
+//        if( ratioWidth > ratioHeight ) {
+//            console.log ("Here?");
+//            imageSprite.scale( ratioWidth, ratioWidth );
+////            imageSprite.scaleV( ratioWidth );
+//        } else {
+//            console.log ("There?");
+//            imageSprite.scale( ratioHeight, ratioHeight );
+////            imageSprite.scaleV( ratioHeight );
+//        }
+//        
+//        me.game.world.addChild( imageSprite, 3);
+        
         me.game.world.addChild(new me.ImageLayer(
                 (me.video.renderer.getWidth() - game.CorruptImage.width) / 2, 
                 (me.video.renderer.getHeight() - game.CorruptImage.height) / 3,

@@ -55,7 +55,7 @@ game.TitleScreen = me.ScreenObject.extend({
         me.input.bindPointer(me.input.mouse.LEFT, me.input.KEY.ENTER);
         this.handler = me.event.subscribe(me.event.KEYDOWN, function (action, keyCode, edge) {
             if (action === "enter") {
-                game.ImageProcessor();
+//                game.ImageProcessor(); @TODO - Do image Processing.
                 
                 // this will unlock audio on mobile devices
                 me.state.change(me.state.PLAY);

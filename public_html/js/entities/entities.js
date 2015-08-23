@@ -152,7 +152,7 @@ game.PlayerEntity = me.Entity.extend({
             if (other instanceof game.BaseLaser) {
                 isCollision = false;
             }
-        }
+        } else if ( other.body.collisionType === me.collision.types.PROJECTILE_OBJECT )
 
         // Make all other objects solid
         return isCollision;
@@ -166,8 +166,12 @@ game.BaseEnemy = me.Entity.extend({
     /**
      * constructor
      */
-    init: function (x, y, color) {
+    init: function (x, y, pixel, color) {
         var image = "";
+        this.color = color;
+        this.pixel = pixel;
+        this.value = config.baseEnemyValue;
+        this.alive = true;
         switch (color) {
             case "Red":
                 image = "red_base_enemy";
@@ -195,12 +199,19 @@ game.BaseEnemy = me.Entity.extend({
         this.body.collisionType = me.collision.types.ENEMY_OBJECT;
     },
     update: function (time) {
+        this.body.vel.x = -config.baseEnemyVel;
+        if (this.pos.x < me.game.viewport.left) {
+            me.game.world.removeChild(this);
+            game.EnemyManager.enemyEscaped(this);
+        }
+        
+        
         this._super(me.Entity, "update", [time]);
 
         this.body.update();
 
         return true;
-    }
+    } 
 
 });
 
@@ -213,6 +224,7 @@ game.BaseLaser = me.Entity.extend({
         this._super(me.Entity, "init", [x, y, {width: config.baseLaserWidth, height: config.baseLaserHeight}]);
         this.z = 5;
         this.player = player;
+        this.alive = true;
         this.body.addShape(new me.Rect(0, 0, this.width, this.height));
         this.body.updateBounds();
 //        this.body.setVelocity(1, 0);
@@ -246,16 +258,20 @@ game.BaseLaser = me.Entity.extend({
         return true;
     },
     onCollision: function (res, other) {
-        console.log( other.body.collisionType + " Enemy: " + me.collision.types.ENEMY_OBJECT + " Player: " + me.collision.types.PLAYER_OBJECT);
-        if (other.body.collisionType === me.collision.types.ENEMY_OBJECT) {
-            me.game.world.removeChild(this);
-            me.game.world.removeChild(other);
-            this.player.usedLaserShots--;
-//            game.PlayScreen.enemyManager.removeChild(other);
-            return false;
-        } else if( other.body.collisionType === me.collision.types.PLAYER_OBJECT || 
-                other.body.collisionType === me.collision.types.PROJECTILE_OBJECT) {
-            return false;
-        } 
+        if( this.alive ) {
+            console.log( other.body.collisionType + " Enemy: " + me.collision.types.ENEMY_OBJECT + " Player: " + me.collision.types.PLAYER_OBJECT);
+            if (other.body.collisionType === me.collision.types.ENEMY_OBJECT && other.alive) {
+                console.log("enemyDestroyed... collision in laser");
+                this.alive = false;
+                me.game.world.removeChild(this);
+                game.EnemyManager.enemyDestroyed( other );
+                this.player.usedLaserShots--;
+    //            game.PlayScreen.enemyManager.removeChild(other);
+                return false;
+            } else if( other.body.collisionType === me.collision.types.PLAYER_OBJECT || 
+                    other.body.collisionType === me.collision.types.PROJECTILE_OBJECT) {
+                return false;
+            } 
+        }
     }
 });

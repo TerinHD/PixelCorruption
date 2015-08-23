@@ -24,27 +24,29 @@
 
 /* Game namespace */
 var game = {
-
-    // an object where to store game information
-    data : {
-        // score
-        score : 0
+// an object where to store game information
+    data: {
+// score
+        score: 0
     },
-
-
     // Run on page load.
-    "onload" : function () {
+    "onload": function () {
         // Initialize the video.
-        if (!me.video.init(config.screenWidth, config.screenHeight, {wrapper : "screen", scale : "auto"})) {
+        if (!me.video.init(config.screenWidth, config.screenHeight, 
+                {   wrapper: "screen", 
+                    scale: "auto", 
+                    scaleMethod: "fit", 
+                    doubleBuffering: true})) {
             alert("Your browser does not support HTML5 canvas.");
             return;
         }
+        me.sys.fps = config.fps;
 
         // add "#debug" to the URL to enable the debug Panel
         if (me.game.HASH.debug === true) {
             window.onReady(function () {
                 me.plugin.register.defer(this, me.debug.Panel, "debug", me.input.KEY.V);
-                me.debug.renderHitBox = false; 
+                me.debug.renderHitBox = false;
                 me.debug.displayFPS = true;
                 me.debug.renderVelocity = false;
             });
@@ -52,29 +54,83 @@ var game = {
 
         // Initialize the audio.
         me.audio.init("mp3,ogg");
-
         // Set a callback to run when loading is complete.
         me.loader.onload = this.loaded.bind(this);
-
         // Load the resources.
         me.loader.preload(game.resources);
-
         // Initialize melonJS and display a loading screen.
         me.state.set(me.state.LOADING, new game.LoadingScreen());
         me.state.change(me.state.LOADING);
     },
-
     // Run on game resources loaded.
-    "loaded" : function () {
+    "loaded": function () {
         me.state.set(me.state.MENU, new game.TitleScreen());
         me.state.set(me.state.PLAY, new game.PlayScreen());
-
         // add our player entity in the entity pool
         me.pool.register("player", game.PlayerEntity);
         me.pool.register("laser", game.BaseLaser);
         me.pool.register("baseEnemy", game.BaseEnemy);
-
         // Start the game.
         me.state.change(me.state.MENU);
     }
+};
+
+game.colors = ["Red", "Green", "Blue"];
+
+game.EnemyManager = {
+    init: function (pixels) {
+        this.pixels = pixels;
+        this.currentPixel = 0;
+    },
+    enemyDestroyed: function (enemy) {
+        enemy.alive = false;
+        me.game.world.removeChild(enemy);
+//        var pixel = pixels[enemy.pixel];
+//        pixel.decrement( enemy.value, enemy.color);
+        
+        this.createEnemy(game.colors[Math.floor(Math.random() * 3)], "Base");
+    },
+    enemyEscaped: function (enemy) {
+        enemy.alive = false;
+        me.game.world.removeChild(enemy);
+        
+        this.createEnemy(game.colors[Math.floor(Math.random() * 3)], "Base");
+    },
+    
+    createEnemy: function (color, type) {
+        switch (type) {
+            case "Base":
+                me.game.world.addChild(
+                        me.pool.pull("baseEnemy",
+                                me.game.viewport.right - 5,
+                                Math.floor(Math.random() * (me.game.viewport.bottom - 32)) + 1,
+                                this.currentPixel, color), 20);
+                break;
+        }
+    }
+};
+game.Pixel = {
+    init: function (red, green, blue, alpha) {
+        this.red = red;
+        this.redRemaining = red;
+        this.green = green;
+        this.greenRemaining = green;
+        this.blue = blue;
+        this.blueRemaining = blue;
+        this.alpha = alpha;
+    },
+    decrement: function (value, color) {
+        switch (color) {
+            case "Red":
+                this.redRemaining -= value;
+                break;
+            case "Green":
+                this.greenRemaining -= value;
+                break;
+            case "Blue":
+                this.blueRemaining -= value;
+                break;
+        }
+    }
+
 };

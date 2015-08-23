@@ -26,6 +26,9 @@
  * Config Namespace
  */
 var config = {
+    // System Configs
+    fps: 75,
+    
     // Screen Size
     screenWidth: 900,
     screenHeight: 500,
@@ -36,6 +39,10 @@ var config = {
     // Player Variables
     playerAccel: 0.5,
     maxPlayerVel: 15,
+    
+    // Enemy Variables
+    baseEnemyValue: 1,
+    baseEnemyVel: 5,
     
     // Weapon Variables
     baseLaserWidth: 28,

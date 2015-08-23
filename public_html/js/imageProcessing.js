@@ -104,7 +104,3 @@ function getRGBValues(img, blockSize) {
     context.putImageData( imageData, 0,0);
     img.src = canvas.toDataURL();
 }
-
-
-
-

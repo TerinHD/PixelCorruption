@@ -38,9 +38,19 @@ game.PlayScreen = me.ScreenObject.extend({
         me.game.world.addChild(this.HUD);
 
         me.game.world.addChild(me.pool.pull("player", 20, me.game.viewport.height / 2 - 32 / 2, 0.15), 1);
-//        me.game.world.addChild(me.pool.pull("baseEnemynemy"", me.game.viewport.right - 32, 100, "Red"), 2);
-//        me.game.world.addChild(me.pool.pull("baseEnemy", me.game.viewport.right - 32, 200, "Green"), 2);
-//        me.game.world.addChild(me.pool.pull("baseE, me.game.viewport.right - 32, 300, "Blue"), 2);
+        
+        game.EnemyManager.createEnemy("Red", "Base");
+        game.EnemyManager.createEnemy("Green", "Base");
+        game.EnemyManager.createEnemy("Blue", "Base");
+        game.EnemyManager.createEnemy("Red", "Base");
+        game.EnemyManager.createEnemy("Green", "Base");
+        game.EnemyManager.createEnemy("Blue", "Base");
+        game.EnemyManager.createEnemy("Red", "Base");
+        game.EnemyManager.createEnemy("Green", "Base");
+        game.EnemyManager.createEnemy("Blue", "Base");
+        game.EnemyManager.createEnemy("Red", "Base");
+        game.EnemyManager.createEnemy("Green", "Base");
+        game.EnemyManager.createEnemy("Blue", "Base");
 
         me.input.bindKey(me.input.KEY.LEFT, "left");
         me.input.bindKey(me.input.KEY.RIGHT, "right");

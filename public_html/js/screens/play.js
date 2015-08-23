@@ -39,18 +39,7 @@ game.PlayScreen = me.ScreenObject.extend({
 
         me.game.world.addChild(me.pool.pull("player", 20, me.game.viewport.height / 2 - 32 / 2, 0.15), 1);
         
-        game.EnemyManager.createEnemy("Red", "Base");
-        game.EnemyManager.createEnemy("Green", "Base");
-        game.EnemyManager.createEnemy("Blue", "Base");
-        game.EnemyManager.createEnemy("Red", "Base");
-        game.EnemyManager.createEnemy("Green", "Base");
-        game.EnemyManager.createEnemy("Blue", "Base");
-        game.EnemyManager.createEnemy("Red", "Base");
-        game.EnemyManager.createEnemy("Green", "Base");
-        game.EnemyManager.createEnemy("Blue", "Base");
-        game.EnemyManager.createEnemy("Red", "Base");
-        game.EnemyManager.createEnemy("Green", "Base");
-        game.EnemyManager.createEnemy("Blue", "Base");
+        game.EnemyManager.startEnemyDeployment();
 
         me.input.bindKey(me.input.KEY.LEFT, "left");
         me.input.bindKey(me.input.KEY.RIGHT, "right");
@@ -68,6 +57,8 @@ game.PlayScreen = me.ScreenObject.extend({
     onDestroyEvent: function () {
         // remove the HUD from the game world
         me.game.world.removeChild(this.HUD);
+        
+        game.EnemyManager.stopEnemyDeployment();
 
         me.input.unbindKey(me.input.KEY.LEFT);
         me.input.unbindKey(me.input.KEY.RIGHT);

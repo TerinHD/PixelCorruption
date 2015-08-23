@@ -32,10 +32,10 @@ var game = {
     // Run on page load.
     "onload": function () {
         // Initialize the video.
-        if (!me.video.init(config.screenWidth, config.screenHeight, 
-                {   wrapper: "screen", 
-                    scale: "auto", 
-                    scaleMethod: "fit", 
+        if (!me.video.init(config.screenWidth, config.screenHeight,
+                {wrapper: "screen",
+                    scale: "auto",
+                    scaleMethod: "fit",
                     doubleBuffering: true})) {
             alert("Your browser does not support HTML5 canvas.");
             return;
@@ -68,42 +68,56 @@ var game = {
         me.state.set(me.state.MENU, new game.TitleScreen());
         me.state.set(me.state.PLAY, new game.PlayScreen());
         me.state.set(me.state.GAMEOVER, new game.GameOverScreen());
-        
+
         // add our player entity in the entity pool
         me.pool.register("player", game.PlayerEntity);
         me.pool.register("laser", game.BaseLaser);
         me.pool.register("baseEnemy", game.BaseEnemy);
+        me.pool.register("pixel", game.Pixel);
         // Start the game.
         me.state.change(me.state.MENU);
     }
 };
 
-game.colors = ["Red", "Green", "Blue"];
-
 game.EnemyManager = {
     init: function (pixels) {
         this.pixels = pixels;
-        this.currentPixel = 0;
+        this.currentPixelId = 0;
+    },
+    startEnemyDeployment: function () {
+        this.intervalId = me.timer.setInterval(
+                game.EnemyManager.handleInterval,
+                config.enemyTimerDelay,
+                true);
+    },
+    handleInterval: function () {
+        var color = game.EnemyManager.selectColor();
+        
+        if( color === "Out_of_Pixels" ) {
+            
+        } else {
+            game.EnemyManager.createEnemy( color, "Base");
+        }
+    },
+    stopEnemyDeployment: function () {
+        me.timer.clearInterval(this.intervalId);
+    },
+    resetManager: function () {
+        this.currentPixelId = 0;
+        for (var pixel in this.pixels) {
+            pixel.reset();
+        }
     },
     enemyDestroyed: function (enemy) {
         enemy.alive = false;
         me.game.world.removeChild(enemy);
-//        var pixel = pixels[enemy.pixel];
-//        pixel.decrement( enemy.value, enemy.color);
-        
-        this.createEnemy(game.colors[Math.floor(Math.random() * 3)], "Base");
+        var pixel = this.pixels[enemy.pixel];
+        pixel.decrement(enemy.value, enemy.color);
     },
     enemyEscaped: function (enemy) {
         enemy.alive = false;
         me.game.world.removeChild(enemy);
-        
-        this.createNewEnemy( "Base");
     },
-    
-    createNewEnemy: function ( type ) {
-        this.createEnemy(game.colors[Math.floor(Math.random() * 3)], type);
-    },
-    
     createEnemy: function (color, type) {
         switch (type) {
             case "Base":
@@ -111,23 +125,50 @@ game.EnemyManager = {
                         me.pool.pull("baseEnemy",
                                 me.game.viewport.right - 5,
                                 Math.floor(Math.random() * (me.game.viewport.bottom - 32)) + 1,
-                                this.currentPixel, color), 20);
+                                this.currentPixelId, color), 20);
                 break;
         }
+    },
+    
+    selectColor: function ( ) {
+        if(this.currentPixelId > this.pixels.length ) {
+            return "Out_of_Pixels";
+        }
+        
+        var currentPixel = this.pixels[this.currentPixelId];
+        var colors = new Array();
+
+        if (currentPixel.redRemaining > config.minimumEnemyValue) {
+            colors.push( "Red" );
+        }
+        
+        if (currentPixel.greenRemaining > config.minimumEnemyValue) {
+            colors.push( "Green" );
+        }
+        
+        if (currentPixel.blueRemaining > config.minimumEnemyValue) {
+            colors.push( "Blue" );
+        }
+        
+        if( colors.length === 0 ) {
+            this.currentPixelId++;
+            return this.selectColor();
+        }
+
+        return colors[Math.floor(Math.random() * colors.length)];
     }
 };
 
-game.Pixel = {
+game.Pixel = Object.extend({
     init: function (red, green, blue, alpha) {
         this.red = red;
-        this.redRemaining = red;
         this.green = green;
-        this.greenRemaining = green;
         this.blue = blue;
-        this.blueRemaining = blue;
         this.alpha = alpha;
+        this.reset();
     },
     decrement: function (value, color) {
+        this.totalPixelBitCount -= value;
         switch (color) {
             case "Red":
                 this.redRemaining -= value;
@@ -139,6 +180,19 @@ game.Pixel = {
                 this.blueRemaining -= value;
                 break;
         }
+    },
+    reset: function () {
+        if (this.red < config.minimumValue && this.green < config.minimumValue && this.blue < config.minimumValue) {
+            this.redRemaining = config.minimumValue * config.blackPixelEnemyCount;
+            this.greenRemaining = config.minimumValue * config.blackPixelEnemyCount;
+            this.blueRemaining = config.minimumValue * config.blackPixelEnemyCount;
+        } else {
+            this.redRemaining = this.red;
+            this.greenRemaining = this.green;
+            this.blueRemaining = this.blue;
+        }
+
+        this.totalPixelBitCount = this.redRemaining + this.greenRemaining + this.blueRemaining;
     }
 
-};
+});

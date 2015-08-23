@@ -49,14 +49,15 @@ game.TitleScreen = me.ScreenObject.extend({
             name: "logo",
             z: 1
         }));
-
+        
         // change to play state on press Enter or click/tap
         me.input.bindKey(me.input.KEY.ENTER, "enter", true);
         me.input.bindPointer(me.input.mouse.LEFT, me.input.KEY.ENTER);
         this.handler = me.event.subscribe(me.event.KEYDOWN, function (action, keyCode, edge) {
             if (action === "enter") {
-//                game.ImageProcessor(); @TODO - Do image Processing.
-                
+                var img = me.loader.getImage("sampleImage");
+                var pixels = game.ImageProcessor.getRGBValues( img );
+                game.EnemyManager.init(pixels);
                 // this will unlock audio on mobile devices
                 me.state.change(me.state.PLAY);
             }

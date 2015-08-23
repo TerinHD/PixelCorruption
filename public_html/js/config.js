@@ -27,7 +27,8 @@
  */
 var config = {
     // System Configs
-    fps: 75,
+    fps: 75, // Target Frames per second
+    enemyTimerDelay: 100, // Milliseconds 
     
     // Screen Size
     screenWidth: 900,
@@ -41,11 +42,16 @@ var config = {
     maxPlayerVel: 15,
     
     // Enemy Variables
-    baseEnemyValue: 1,
+    blackPixelEnemyCount: 3, // Number of enemies if a pixel is black rgb(0,0,0)
+    minimumEnemyValue: 25, // Should match baseEnemyValue
+    baseEnemyValue: 25,
     baseEnemyVel: 5,
     
     // Weapon Variables
     baseLaserWidth: 28,
     baseLaserHeight: 5,
-    baseLaserVel: 1
+    baseLaserVel: 1,
+    
+    // Version
+    version: 1
 };

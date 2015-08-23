@@ -23,84 +23,70 @@
  */
 
 // Process the image for game data.
-function processImage(fileInput) {
-    var files = fileInput.files;
-    for (var i = 0; i < files.length; i++) {
-        var file = files[i];
-        var imageType = /image.*/;
-        if (!file.type.match(imageType)) {
-            continue;
-        }
-        var img = document.getElementById("thumbnail");
+game.ImageProcessor = {
+    processImage: function (fileInput) {
+        var files = fileInput.files;
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var imageType = /image.*/;
+            if (!file.type.match(imageType)) {
+                continue;
+            }
+            var img = document.getElementById("thumbnail");
 //        var img = new Image();
-        img.file = file;
-        var reader = new FileReader();
-        var loadedFromFile = false;
-        reader.onload = (function (aImg) {
-            return function (e) {
-                aImg.src = e.target.result;
-                img.onload = function () {
-                    if( !loadedFromFile ) {
-                        loadedFromFile = true;
-                        getRGBValues( img, 5);
-                    }
+            img.file = file;
+            var reader = new FileReader();
+            var loadedFromFile = false;
+            reader.onload = (function (aImg) {
+                return function (e) {
+                    aImg.src = e.target.result;
+                    img.onload = function () {
+                        if (!loadedFromFile) {
+                            loadedFromFile = true;
+                            this.getRGBValues(img, 5);
+                        }
+                    };
                 };
-            };
-        })(img);
-        
-        
+            })(img);
 //        getRGBValues(img, 5);
-        reader.readAsDataURL(file);
-    }
-}
-
+            reader.readAsDataURL(file);
+        }
+    },
 // Currently redraws image... 
-function getRGBValues(img, blockSize) {
+    getRGBValues: function ( img ) {
 
-    // Create a temp image of the input image
+        // Create a temp image of the input image
 //    var tempImage = new Image();
 //    tempImage.src = img.src;
 
-    // Draw it to access the pixels directly
-    var canvas = document.createElement('canvas');
-    var context = canvas.getContext('2d');
-    canvas.width = img.width;
-    canvas.height = img.height;
-    
-    // Draw Image to original canvas
-    console.log( "" + img.width + " : " + img.height );
-    context.drawImage(img, 0, 0);
+        // Draw it to access the pixels directly
+        var canvas = document.createElement('canvas');
+        var context = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
 
-    // Create a new canvas for the new image
+        // Draw Image to original canvas
+        context.drawImage(img, 0, 0);
+
+        // Create a new canvas for the new image
 //    var newCanvas = document.createElement("canvas");
 //    var newContext = newCanvas.getContext("2d");
 //    newCanvas.width = img.width / blockSize;
 //    newCanvas.height = img.height / blockSize;
+        var imageData = context.getImageData(0, 0, img.width, img.height);
+        var pixels = imageData.data;
+        
+//        var numPixels = img.width * img.height;
+//        var sizeOfPixels = numPixels * 4;
+        var pixelArray = new Array();
 
-    console.log( "" + img.width + " : " + img.height );
-    var imageData = context.getImageData(0, 0, img.width, img.height);
-    var pixels = imageData.data;
-//    var outputPixels = context.getImageData(0, 0, newCanvas.width, newCanvas.height);
-//
-//    for (var i = 0, numNewPixels = outputPixels.length; i < numNewPixels; i += 4) {
-//        
-//        
-//    }
-    
-    for (var i = 0, n = pixels.length; i < n; i += 4) {
-        if( i > 255 ) {
-            pixels[i] = 255;
-            pixels[i+1] = 255;
-            pixels[i+2] = 255;
-            pixels[i+3] = 255;
-        } else {
-            pixels[i] = i;
-            pixels[i+1] = i;
-            pixels[i+2] = i;
-            pixels[i+3] = 255;
+        for (var i = 0, n = pixels.length; i < n; i += 4) {
+            var pixelNum = i / 4;
+            pixelArray[pixelNum] = me.pool.pull("pixel", pixels[i], pixels[i+1], pixels[i+2], pixels[i+3]); 
         }
-    }
 
-    context.putImageData( imageData, 0,0);
-    img.src = canvas.toDataURL();
-}
+//        context.putImageData(imageData, 0, 0);
+//        img.src = canvas.toDataURL();
+        return pixelArray;
+    }
+};

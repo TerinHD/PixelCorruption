@@ -64,8 +64,11 @@ var game = {
     },
     // Run on game resources loaded.
     "loaded": function () {
+        // Set Statescreens
         me.state.set(me.state.MENU, new game.TitleScreen());
         me.state.set(me.state.PLAY, new game.PlayScreen());
+        me.state.set(me.state.GAMEOVER, new game.GameOverScreen());
+        
         // add our player entity in the entity pool
         me.pool.register("player", game.PlayerEntity);
         me.pool.register("laser", game.BaseLaser);
@@ -94,7 +97,11 @@ game.EnemyManager = {
         enemy.alive = false;
         me.game.world.removeChild(enemy);
         
-        this.createEnemy(game.colors[Math.floor(Math.random() * 3)], "Base");
+        this.createNewEnemy( "Base");
+    },
+    
+    createNewEnemy: function ( type ) {
+        this.createEnemy(game.colors[Math.floor(Math.random() * 3)], type);
     },
     
     createEnemy: function (color, type) {
@@ -109,6 +116,7 @@ game.EnemyManager = {
         }
     }
 };
+
 game.Pixel = {
     init: function (red, green, blue, alpha) {
         this.red = red;

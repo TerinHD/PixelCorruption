@@ -152,7 +152,11 @@ game.PlayerEntity = me.Entity.extend({
             if (other instanceof game.BaseLaser) {
                 isCollision = false;
             }
-        } else if ( other.body.collisionType === me.collision.types.PROJECTILE_OBJECT )
+        } else if ( other.body.collisionType === me.collision.types.ENEMY_OBJECT ) {
+            me.game.world.removeChild(this);
+            game.EnemyManager.enemyDestroyed( other );
+            me.state.change(me.state.GAMEOVER);
+        }
 
         // Make all other objects solid
         return isCollision;
@@ -245,7 +249,6 @@ game.BaseLaser = me.Entity.extend({
         this.alwaysUpdate = true;
     },
     update: function (time) {
-//        console.log( time );
         this.body.vel.x = config.baseLaserVel * time;
         if (this.pos.x > me.game.viewport.right) {
             me.game.world.removeChild(this);
@@ -259,9 +262,7 @@ game.BaseLaser = me.Entity.extend({
     },
     onCollision: function (res, other) {
         if( this.alive ) {
-            console.log( other.body.collisionType + " Enemy: " + me.collision.types.ENEMY_OBJECT + " Player: " + me.collision.types.PLAYER_OBJECT);
             if (other.body.collisionType === me.collision.types.ENEMY_OBJECT && other.alive) {
-                console.log("enemyDestroyed... collision in laser");
                 this.alive = false;
                 me.game.world.removeChild(this);
                 game.EnemyManager.enemyDestroyed( other );

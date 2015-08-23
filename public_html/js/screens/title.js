@@ -22,14 +22,52 @@
  * THE SOFTWARE.
  */
 
+game.UploadForm = me.Renderable.extend({
+    init : function (x, y, type, length) {
+        
+        this.div = document.createElement('DIV');
+        this.div.innerHTML = '<input id="file" type="file" accept="image/*" onchange="game.ImageProcessor.processLoadImage(this)" />';
+        this.div.id = "uploadForm";
+        this.div.class = "uploadForm";
+
+        var screen = me.video.getWrapper();
+        screen.appendChild(this.div);
+    },
+
+    destroy : function () {
+        var screen = me.video.getWrapper();
+        screen.removeChild( this.div );
+    }
+});
+
+game.TextInstructions = me.Renderable.extend({
+    // constructor
+    init: function (w, h) {
+        this._super(me.Renderable, "init", [0, 0, w, h]);
+        this.logo1 = new me.Font("Karmatic Arcade", 20, "white", "middle");
+        this.logo1.textBaseline = "alphabetic";
+    },
+    // Draw the Loading... text
+    draw: function (renderer) {
+        var measurement = this.logo1.measureText(renderer, "Select an image to play then press Enter or press Enter");
+        var xpos = (this.width - measurement.width) / 2;
+        var ypos = ((this.height - measurement.height) / 4)*3;
+        this.logo1.draw(renderer, "Select an image to play then press Enter or press Enter", xpos, ypos);
+    }
+
+});
+
+game.UserImage = undefined;
+
 game.TitleScreen = me.ScreenObject.extend({
     /**
      *  action to perform on state change
      */
     onResetEvent: function () {
+
         // background color
         me.game.world.addChild(new me.ColorLayer("background", "#000000", 0));
-
+        me.game.world.addChild(new game.TextInstructions(me.video.renderer.getWidth(), me.video.renderer.getHeight()), 2);
         // Center the logo.
         var x = (config.screenWidth / 2) - (config.logoWidth / 2);
         if (x < 0) {
@@ -50,13 +88,21 @@ game.TitleScreen = me.ScreenObject.extend({
             z: 1
         }));
         
+        this.input = new game.UploadForm((config.screenWidth / 4), (config.screenHeight / 3) * 2);
+
+        me.game.world.addChild(this.input, 3);
+
         // change to play state on press Enter or click/tap
         me.input.bindKey(me.input.KEY.ENTER, "enter", true);
-        me.input.bindPointer(me.input.mouse.LEFT, me.input.KEY.ENTER);
         this.handler = me.event.subscribe(me.event.KEYDOWN, function (action, keyCode, edge) {
             if (action === "enter") {
-                var img = me.loader.getImage("sampleImage");
-                var pixels = game.ImageProcessor.getRGBValues( img );
+                if( typeof game.UserImage === 'undefined' || !(game.UserImage instanceof Image)) {
+                    this.img = me.loader.getImage("sampleImage");
+                } else {
+                    this.img = game.UserImage;
+                }
+
+                var pixels = game.ImageProcessor.getRGBValues(this.img);
                 game.EnemyManager.init(pixels);
                 // this will unlock audio on mobile devices
                 me.state.change(me.state.PLAY);

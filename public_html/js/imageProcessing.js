@@ -24,7 +24,7 @@
 
 // Process the image for game data.
 game.ImageProcessor = {
-    processImage: function (fileInput) {
+    processLoadImage: function ( fileInput ) {
         var files = fileInput.files;
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
@@ -32,9 +32,9 @@ game.ImageProcessor = {
             if (!file.type.match(imageType)) {
                 continue;
             }
-            var img = document.getElementById("thumbnail");
-//        var img = new Image();
+            var img = new Image();
             img.file = file;
+            
             var reader = new FileReader();
             var loadedFromFile = false;
             reader.onload = (function (aImg) {
@@ -43,12 +43,11 @@ game.ImageProcessor = {
                     img.onload = function () {
                         if (!loadedFromFile) {
                             loadedFromFile = true;
-                            this.getRGBValues(img, 5);
+                            game.UserImage = img;
                         }
                     };
                 };
             })(img);
-//        getRGBValues(img, 5);
             reader.readAsDataURL(file);
         }
     },
@@ -64,7 +63,6 @@ game.ImageProcessor = {
         var context = canvas.getContext('2d');
         canvas.width = img.width;
         canvas.height = img.height;
-
         // Draw Image to original canvas
         context.drawImage(img, 0, 0);
 

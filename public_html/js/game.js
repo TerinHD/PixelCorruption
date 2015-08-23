@@ -35,7 +35,7 @@ var game = {
     // Run on page load.
     "onload" : function () {
         // Initialize the video.
-        if (!me.video.init(960, 500, {wrapper : "screen", scale : "auto"})) {
+        if (!me.video.init(config.screenWidth, config.screenHeight, {wrapper : "screen", scale : "auto"})) {
             alert("Your browser does not support HTML5 canvas.");
             return;
         }
@@ -60,12 +60,13 @@ var game = {
         me.loader.preload(game.resources);
 
         // Initialize melonJS and display a loading screen.
+        me.state.set(me.state.LOADING, new game.LoadingScreen());
         me.state.change(me.state.LOADING);
     },
 
     // Run on game resources loaded.
     "loaded" : function () {
-//        me.state.set(me.state.MENU, new game.TitleScreen());
+        me.state.set(me.state.MENU, new game.TitleScreen());
         me.state.set(me.state.PLAY, new game.PlayScreen());
 
         // add our player entity in the entity pool
@@ -74,6 +75,6 @@ var game = {
         me.pool.register("baseEnemy", game.BaseEnemy);
 
         // Start the game.
-        me.state.change(me.state.PLAY);
+        me.state.change(me.state.MENU);
     }
 };

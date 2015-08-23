@@ -26,6 +26,13 @@
  * Config Namespace
  */
 var config = {
+    // Screen Size
+    screenWidth: 900,
+    screenHeight: 500,
+    
+    logoWidth: 800,
+    logoHeight: 350,
+    
     // Player Variables
     playerAccel: 0.5,
     maxPlayerVel: 15,

@@ -21,23 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+    
+game.TextLoading = me.Renderable.extend({
+        // constructor
+        init: function (w, h) {
+            this._super(me.Renderable, "init", [0, 0, w, h]);
+            this.logo1 = new me.Font("Karmatic Arcade", 32, "white", "middle");
+            this.logo1.textBaseline = "alphabetic";
+        },
+        
+        // Draw the Loading... text
+        draw: function (renderer) {
+            var logo1_width = this.logo1.measureText(renderer, "Loading...").width;
+            var xpos = (this.width - logo1_width) / 2;
+            var ypos = (this.height / 2) + 100;
+            this.logo1.draw(renderer, "Loading...", xpos, ypos);
+        }
 
-game.TitleScreen = me.ScreenObject.extend({
+    });
+
+
+game.LoadingScreen = me.ScreenObject.extend({
     /**
      *  action to perform on state change
      */
     onResetEvent: function () {
+        me.game.reset();
+
         // background color
         me.game.world.addChild(new me.ColorLayer("background", "#000000", 0));
 
         // Center the logo.
-        var x = (config.screenWidth / 2) - (config.logoWidth / 2);
+        var x = (config.screenWidth / 2) - (config.logoWidth/2);
         if (x < 0) {
             x = 0;
         }
 
         // Use the first 1/3 for the Logo if you can.
-        var y = (config.screenHeight / 3) - (config.logoHeight / 2);
+        var y = (config.screenHeight / 3) - (config.logoHeight/2);
         if (y < 0) {
             y = 0;
         }
@@ -50,24 +71,12 @@ game.TitleScreen = me.ScreenObject.extend({
             z: 1
         }));
 
-        // change to play state on press Enter or click/tap
-        me.input.bindKey(me.input.KEY.ENTER, "enter", true);
-        me.input.bindPointer(me.input.mouse.LEFT, me.input.KEY.ENTER);
-        this.handler = me.event.subscribe(me.event.KEYDOWN, function (action, keyCode, edge) {
-            if (action === "enter") {
-                game.ImageProcessor();
-                
-                // this will unlock audio on mobile devices
-                me.state.change(me.state.PLAY);
-            }
-        });
+        me.game.world.addChild(new game.TextLoading(me.video.renderer.getWidth(), me.video.renderer.getHeight()), 2);
     },
     /**
      *  action to perform when leaving this screen (state change)
      */
     onDestroyEvent: function () {
-        me.input.unbindKey(me.input.KEY.ENTER);
-        me.input.unbindPointer(me.input.mouse.LEFT);
-        me.event.unsubscribe(this.handler);
+        ; // TODO
     }
 });

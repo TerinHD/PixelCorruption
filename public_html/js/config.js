@@ -40,6 +40,7 @@ var config = {
     // Player Variables
     playerAccel: 0.5,
     maxPlayerVel: 15,
+    playerNumShots: 5,
     
     // Enemy Variables
     blackPixelEnemyCount: 3, // Number of enemies if a pixel is black rgb(0,0,0)

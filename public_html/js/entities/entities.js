@@ -35,12 +35,10 @@ game.PlayerEntity = me.Entity.extend({
         this._super(me.Entity, 'init', [x, y, {
                 image: "player",
                 width: 32,
-                height: 32,
-                laserCount: 1,
-                numLaser: 0
+                height: 32
             }]);
         
-        this.numLaserShots = 1;
+        this.numLaserShots = config.playerNumShots;
         this.usedLaserShots = 0;
 
         // Correct the Hitbox.

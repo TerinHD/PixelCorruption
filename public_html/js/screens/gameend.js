@@ -70,8 +70,8 @@ game.GameEndScreen = me.ScreenObject.extend({
 
         // background color
         me.game.world.addChild(new me.ColorLayer("background", "#000000", 0));
-        me.game.world.addChild(new game.TextGameOver(me.video.renderer.getWidth(), me.video.renderer.getHeight()), 2);
-        me.game.world.addChild(new game.GameOverInstructions(me.video.renderer.getWidth(), me.video.renderer.getHeight()), 2);
+        me.game.world.addChild(new game.TextGameEnd(me.video.renderer.getWidth(), me.video.renderer.getHeight()), 2);
+        me.game.world.addChild(new game.GameEndInstructions(me.video.renderer.getWidth(), me.video.renderer.getHeight()), 2);
         me.game.world.addChild(new me.ImageLayer(
                 (me.video.renderer.getWidth() - game.CorruptImage.width) / 2, 
                 (me.video.renderer.getHeight() - game.CorruptImage.height) / 3,

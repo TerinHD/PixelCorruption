@@ -68,7 +68,7 @@ var game = {
         me.state.set(me.state.MENU, new game.TitleScreen());
         me.state.set(me.state.PLAY, new game.PlayScreen());
         me.state.set(me.state.GAMEOVER, new game.GameOverScreen());
-        me.state.set(me.state.GAMEEND, new game.GameEndScreen());
+        me.state.set(me.state.GAME_END, new game.GameEndScreen());
 
         // add our player entity in the entity pool
         me.pool.register("player", game.PlayerEntity);
@@ -84,6 +84,7 @@ game.EnemyManager = {
     init: function (pixels) {
         this.pixels = pixels;
         this.currentPixelId = 0;
+        this.currentEnemyCount = 0;
     },
     startEnemyDeployment: function () {
         this.intervalId = me.timer.setInterval(
@@ -93,11 +94,14 @@ game.EnemyManager = {
     },
     handleInterval: function () {
         var color = game.EnemyManager.selectColor();
-        
-        if( color === "Out_of_Pixels" ) {
-            
+
+        if (color == "Out_of_Pixels") {
+            console.log("In Out of Pixels " + game.EnemyManager.currentPixelId);
+            if (game.EnemyManager.currentEnemyCount === 0) {
+                me.state.change(me.state.GAME_END);
+            }
         } else {
-            game.EnemyManager.createEnemy( color, "Base");
+            game.EnemyManager.createEnemy(color, "Base");
         }
     },
     stopEnemyDeployment: function () {
@@ -113,49 +117,57 @@ game.EnemyManager = {
         enemy.alive = false;
         me.game.world.removeChild(enemy);
         var pixel = this.pixels[enemy.pixel];
-        pixel.decrement(enemy.value, enemy.color);
+        pixel.decrementRemaining(enemy.value, enemy.color);
+        this.currentEnemyCount--;
     },
     enemyEscaped: function (enemy) {
         enemy.alive = false;
         me.game.world.removeChild(enemy);
+        this.currentEnemyCount--;
     },
     createEnemy: function (color, type) {
+        var putEnemyInWorld = false;
         switch (type) {
             case "Base":
-                me.game.world.addChild(
-                        me.pool.pull("baseEnemy",
-                                me.game.viewport.right - 5,
-                                Math.floor(Math.random() * (me.game.viewport.bottom - 32)) + 1,
-                                this.currentPixelId, color), 20);
+                var enemy = me.pool.pull("baseEnemy",
+                        me.game.viewport.right - 5,
+                        Math.floor(Math.random() * (me.game.viewport.bottom - 32)) + 1,
+                        this.currentPixelId, color);
+                me.game.world.addChild(enemy, 20);
+                var pixel = this.pixels[enemy.pixel];
+                pixel.decrementUsed(enemy.value, enemy.color);
+                putEnemyInWorld = true;
                 break;
         }
+
+        if (putEnemyInWorld) {
+            this.currentEnemyCount++;
+        }
     },
-    
     selectColor: function ( ) {
-        if(this.currentPixelId > this.pixels.length ) {
+        if (this.currentPixelId >= this.pixels.length) {
             return "Out_of_Pixels";
         }
-        
+
         var currentPixel = this.pixels[this.currentPixelId];
         var colors = new Array();
 
-        if (currentPixel.redRemaining > config.minimumEnemyValue) {
-            colors.push( "Red" );
+        if (currentPixel.redUsed >= config.minimumEnemyValue) {
+            colors.push("Red");
         }
-        
-        if (currentPixel.greenRemaining > config.minimumEnemyValue) {
-            colors.push( "Green" );
+
+        if (currentPixel.greenUsed >= config.minimumEnemyValue) {
+            colors.push("Green");
         }
-        
-        if (currentPixel.blueRemaining > config.minimumEnemyValue) {
-            colors.push( "Blue" );
+
+        if (currentPixel.blueUsed >= config.minimumEnemyValue) {
+            colors.push("Blue");
         }
-        
-        if( colors.length === 0 ) {
+
+        if (colors.length === 0) {
             this.currentPixelId++;
             return this.selectColor();
         }
-
         return colors[Math.floor(Math.random() * colors.length)];
     }
 };
@@ -168,8 +180,7 @@ game.Pixel = Object.extend({
         this.alpha = alpha;
         this.reset();
     },
-    decrement: function (value, color) {
-        this.totalPixelBitCount -= value;
+    decrementRemaining: function (value, color) {
         switch (color) {
             case "Red":
                 this.redRemaining -= value;
@@ -182,18 +193,33 @@ game.Pixel = Object.extend({
                 break;
         }
     },
+    decrementUsed: function (value, color) {
+        switch (color) {
+            case "Red":
+                this.redUsed -= value;
+                break;
+            case "Green":
+                this.greenUsed -= value;
+                break;
+            case "Blue":
+                this.blueUsed -= value;
+                break;
+        }
+    },
     reset: function () {
-        if (this.red < config.minimumValue && this.green < config.minimumValue && this.blue < config.minimumValue) {
-            this.redRemaining = config.minimumValue * config.blackPixelEnemyCount;
-            this.greenRemaining = config.minimumValue * config.blackPixelEnemyCount;
-            this.blueRemaining = config.minimumValue * config.blackPixelEnemyCount;
+        if ((this.red < config.minimumEnemyValue) && (this.green < config.minimumEnemyValue) && (this.blue < config.minimumEnemyValue)) {
+            this.redRemaining = config.minimumEnemyValue * config.blackPixelEnemyCount;
+            this.greenRemaining = config.minimumEnemyValue * config.blackPixelEnemyCount;
+            this.blueRemaining = config.minimumEnemyValue * config.blackPixelEnemyCount;
         } else {
             this.redRemaining = this.red;
             this.greenRemaining = this.green;
             this.blueRemaining = this.blue;
         }
 
-        this.totalPixelBitCount = this.redRemaining + this.greenRemaining + this.blueRemaining;
+        this.redUsed = this.redRemaining;
+        this.greenUsed = this.greenRemaining;
+        this.blueUsed = this.blueRemaining;
     }
 
 });

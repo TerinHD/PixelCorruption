@@ -46,17 +46,24 @@ game.GameOverInstructions = me.Renderable.extend({
         this.text1.textBaseline = "alphabetic";
         this.text2 = new me.Font("Karmatic Arcade", 20, "white", "middle");
         this.text2.textBaseline = "alphabetic";
+        this.text3 = new me.Font("Karmatic Arcade", 20, "white", "middle");
+        this.text3.textBaseline = "alphabetic";
     },
     // Draw the Loading... text
     draw: function (renderer) {
+        var pixelBitCountText = "You destroyed " + game.EnemyManager.destroyedEnemyCount + " pixel bits!";
         var measurement = this.text1.measureText(renderer, "Above is your corrupted image.");
-        var measurement2 = this.text2.measureText(renderer, "Title Screen - Press Enter");
+        var measurement2 = this.text2.measureText(renderer, pixelBitCountText);
+        var measurement3 = this.text3.measureText(renderer, "Title Screen - Press Enter");
         var xpos = (this.width - measurement.width) / 2;
-        var ypos = (this.height - measurement.height) - 26 - measurement2.height;
+        var ypos = (this.height - measurement.height) - 32 - measurement2.height - measurement3.height;
         this.text1.draw(renderer, "Above is your corrupted image", xpos, ypos);
         xpos = (this.width - measurement2.width) / 2;
-        ypos = (this.height - measurement2.height) - 20;
-        this.text2.draw(renderer, "Title Screen - Press Enter", xpos, ypos);
+        ypos = (this.height - measurement2.height) - 26 - measurement3.height;
+        this.text2.draw(renderer, pixelBitCountText, xpos, ypos);
+        xpos = (this.width - measurement3.width) / 2;
+        ypos = (this.height - measurement3.height) - 20;
+        this.text3.draw(renderer, "Title Screen - Press Enter", xpos, ypos);
     }
 
 });

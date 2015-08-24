@@ -85,6 +85,7 @@ game.EnemyManager = {
         this.pixels = pixels;
         this.currentPixelId = 0;
         this.currentEnemyCount = 0;
+        this.destroyedEnemyCount = 0;
     },
     startEnemyDeployment: function () {
         this.intervalId = me.timer.setInterval(
@@ -108,6 +109,8 @@ game.EnemyManager = {
     },
     resetManager: function () {
         this.currentPixelId = 0;
+        this.currentEnemyCount = 0;
+        this.destroyedEnemyCount = 0;
         for (var pixel in this.pixels) {
             pixel.reset();
         }
@@ -118,6 +121,7 @@ game.EnemyManager = {
         var pixel = this.pixels[enemy.pixel];
         pixel.decrementRemaining(enemy.value, enemy.color);
         this.currentEnemyCount--;
+        this.destroyedEnemyCount++;
     },
     enemyEscaped: function (enemy) {
         enemy.alive = false;

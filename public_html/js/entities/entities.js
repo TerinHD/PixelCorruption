@@ -174,15 +174,19 @@ game.BaseEnemy = me.Entity.extend({
         this.pixel = pixel;
         this.value = config.baseEnemyValue;
         this.alive = true;
+        this.vel = -config.baseEnemyVel;
         switch (color) {
             case "Red":
                 image = "red_base_enemy";
+                this.vel = -config.baseRedVel;
                 break;
             case "Green":
                 image = "green_base_enemy";
+                this.vel = -config.baseGreenVel;
                 break;
             case "Blue":
                 image = "blue_base_enemy";
+                this.vel = -config.baseBlueVel;
                 break;
         }
 
@@ -201,7 +205,7 @@ game.BaseEnemy = me.Entity.extend({
         this.body.collisionType = me.collision.types.ENEMY_OBJECT;
     },
     update: function (time) {
-        this.body.vel.x = -config.baseEnemyVel;
+        this.body.vel.x = this.vel;
         if (this.pos.x < me.game.viewport.left) {
             me.game.world.removeChild(this);
             game.EnemyManager.enemyEscaped(this);

@@ -98,7 +98,7 @@ game.GameOverScreen = me.ScreenObject.extend({
         
         me.game.world.addChild(new me.ImageLayer(
                 (me.video.renderer.getWidth() - game.CorruptImage.width) / 2, 
-                (me.video.renderer.getHeight() - game.CorruptImage.height) / 3,
+                ((me.video.renderer.getHeight() - game.CorruptImage.height) / 5) * 3,
                 { image: game.CorruptImage, width: game.CorruptImage.width, height: game.CorruptImage.height}), 3);
         
         me.input.bindKey(me.input.KEY.ENTER, "enter", true);

@@ -44,15 +44,21 @@ game.TextInstructions = me.Renderable.extend({
     // constructor
     init: function (w, h) {
         this._super(me.Renderable, "init", [0, 0, w, h]);
-        this.logo1 = new me.Font("Karmatic Arcade", 20, "white", "middle");
-        this.logo1.textBaseline = "alphabetic";
+        this.text1 = new me.Font("Karmatic Arcade", 20, "white", "middle");
+        this.text1.textBaseline = "alphabetic";
+        this.text2 = new me.Font("Karmatic Arcade", 18, "white", "middle");
+        this.text2.textBaseline = "alphabetic";
     },
     // Draw the Loading... text
     draw: function (renderer) {
-        var measurement = this.logo1.measureText(renderer, "Select an image to play then press Enter or press Enter");
+        var measurement = this.text1.measureText(renderer, "Select an image to play then press Enter or press Enter");
+        var measurement2 = this.text2.measureText(renderer, "Limit image to 256x256 pixels");
         var xpos = (this.width - measurement.width) / 2;
         var ypos = ((this.height - measurement.height) / 4)*3;
-        this.logo1.draw(renderer, "Select an image to play then press Enter or press Enter", xpos, ypos);
+        this.text1.draw(renderer, "Select an image to play then press Enter or press Enter", xpos, ypos);
+        xpos = (this.width - measurement2.width) / 2;
+        ypos = ypos + 30;
+        this.text2.draw(renderer, "Limit image to 256x256 pixels", xpos, ypos);
     }
 
 });
